@@ -5,39 +5,48 @@ const {
   checkAccountPayload,
 } = require("../accounts/accounts-middleware");
 
-router.get("/", checkAccountId, (req, res, next) => {
+const Accounts = require("./accounts-model");
+
+router.get("/", async (req, res, next) => {
   // DO YOUR MAGIC
   try {
-    // const accounts = db("accounts");
-    // res.status(accounts);
-    res.json("post accounts");
+    const account = await Accounts.getAll();
+    res.json(account);
   } catch (err) {
     next(err);
   }
 });
 
-router.get("/:id", checkAccountId, (req, res, next) => {
+router.get("/:id", checkAccountId, async (req, res, next) => {
   // DO YOUR MAGIC
-  try {
-  } catch (err) {
-    next(err);
-  }
+
+  res.json(req.account);
+
+  // try {
+  //   const { id } = req.params;
+  //   const account = await Accounts.getById(id);
+  //   res.json(account);
+  // } catch (err) {
+  //   next(err);
+  // }
 });
 
 router.post(
   "/",
   checkAccountPayload,
   checkAccountNameUnique,
-  (req, res, next) => {
+  async (req, res, next) => {
     // DO YOUR MAGIC
     try {
+      const newAccount = await Accounts.create(req.body);
+      res.status(201).json({ newAccount });
     } catch (err) {
       next(err);
     }
   }
 );
 
-router.put("/:id", checkAccountId, (req, res, next) => {
+router.put("/:id", checkAccountId, checkAccountPayload, (req, res, next) => {
   // DO YOUR MAGIC
   try {
   } catch (err) {
@@ -45,9 +54,11 @@ router.put("/:id", checkAccountId, (req, res, next) => {
   }
 });
 
-router.delete("/:id", checkAccountId, (req, res, next) => {
+router.delete("/:id", checkAccountId, async (req, res, next) => {
   // DO YOUR MAGIC
   try {
+    await Accounts.deleteById(req.params.id);
+    res.json(req.account);
   } catch (err) {
     next(err);
   }
