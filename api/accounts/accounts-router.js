@@ -38,21 +38,32 @@ router.post(
   async (req, res, next) => {
     // DO YOUR MAGIC
     try {
-      const newAccount = await Accounts.create(req.body);
-      res.status(201).json({ newAccount });
+      const newAccount = await Accounts.create({
+        name: req.body.name.trim(),
+        budget: req.body.budget,
+      });
+      res.status(201).json(newAccount);
     } catch (err) {
       next(err);
     }
   }
 );
 
-router.put("/:id", checkAccountId, checkAccountPayload, (req, res, next) => {
-  // DO YOUR MAGIC
-  try {
-  } catch (err) {
-    next(err);
+router.put(
+  "/:id",
+  checkAccountId,
+  checkAccountPayload,
+  async (req, res, next) => {
+    // DO YOUR MAGIC
+
+    try {
+      const updated = await Accounts.updateById(req.params.id, req.body);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 router.delete("/:id", checkAccountId, async (req, res, next) => {
   // DO YOUR MAGIC
